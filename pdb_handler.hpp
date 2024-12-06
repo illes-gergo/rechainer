@@ -1,20 +1,23 @@
 #pragma once
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
 
 #define PRINT
+#define DEBUG
 #ifdef DEBUG
-  #define PRINT
+#ifndef PRINT
+#define PRINT
+#endif
 #endif
 
 class Record {
   bool isatom = false;
   std::string type, atomname, resname, chain, symbol, charge;
   std::string rawline;
-  int atomsnum, resseq;
+  int atomsnum, resseq = -1;
   double x, y, z;
 
 public:
@@ -26,25 +29,28 @@ public:
 
 class Residue {
   int resseq;
-  std::vector<Record> records;
+  std::vector<Record*> records;
 
 public:
+  void init();
   Residue();
   Residue(Record record);
-  Residue(int resseq, std::vector<Record> records);
+  Residue(int resseq, std::vector<Record*> records);
   void addrecord(Record record);
+  int get_resseq();
 };
 
 class PDB {
   std::ifstream file;
-  std::vector<Residue> residues;
+  std::vector<Residue*> residues;
   bool readonly = true;
 
-  public:
-    PDB(std::string filename);
-    ~PDB();
-    void addresidue(Residue residue);
+public:
+  PDB(std::string filename);
+  ~PDB();
+  void addresidue(Residue *residue);
 
-  private:
+private:
   void initresidues();
+  void readresidue();
 };
