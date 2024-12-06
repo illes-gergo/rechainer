@@ -5,6 +5,11 @@
 #include <string>
 #include <vector>
 
+#define PRINT
+#ifdef DEBUG
+  #define PRINT
+#endif
+
 class Record {
   bool isatom = false;
   std::string type, atomname, resname, chain, symbol, charge;
@@ -15,7 +20,7 @@ class Record {
 public:
   Record();
   Record(std::string line);
-  void read(std::string line);
+  bool read(std::string line);
   int get_resseq();
 };
 

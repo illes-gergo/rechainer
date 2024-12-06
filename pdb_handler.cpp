@@ -19,9 +19,14 @@ Record::Record(std::string line) {
     z = stod(line.substr(46, 8));
     symbol = line.substr(76, 2);
     charge = line.substr(78, 2);
+    return;
   }
+#ifdef PRINT
+  std::cerr << "Line does not contain atom" << std::endl;
+#endif
 }
-void Record::read(std::string line) {
+
+bool Record::read(std::string line) {
   rawline = line;
   if (line.substr(0, 4) == "ATOM") {
     isatom = true;
@@ -36,7 +41,12 @@ void Record::read(std::string line) {
     z = stod(line.substr(46, 8));
     symbol = line.substr(76, 2);
     charge = line.substr(78, 2);
+    return true;
   }
+#ifdef PRINT
+  std::cerr << "Line does not contain atom" << std::endl;
+#endif
+  return false;
 }
 
 int Record::get_resseq() { return resseq; }
@@ -68,6 +78,7 @@ void Residue::addrecord(Record record) { records.push_back(record); }
 void PDB::addresidue(Residue residue) { residues.push_back(residue); }
 
 void PDB::initresidues() {
+  bool ended = false;
   bool foundfirst = false;
   int currentseq, scanseq;
   std::string line;
@@ -75,7 +86,7 @@ void PDB::initresidues() {
   Residue loader;
   // Find first residue
   while (!foundfirst) {
-    if (std::getline(file, line)) {
+    if (!std::getline(file, line).eof()) {
       if (line.substr(0, 4) == "ATOM") {
         scratch.read(line);
         currentseq = scratch.get_resseq();
@@ -84,21 +95,32 @@ void PDB::initresidues() {
       }
 
     } else {
+#ifdef PRINT
       std::cerr << "First residue not found!" << std::endl;
+#endif
       break;
     }
   }
+#ifdef PRINT
+  std::cout << "First residue found, keep reading..." << std::endl;
+#endif
   // If first residue found, then read it
   std::getline(file, line); // Advance to the next record
   scratch.read(line);
   currentseq = scratch.get_resseq();
   scanseq = currentseq;
-  while (currentseq == scanseq) {
+  while (currentseq == scanseq && !file.eof()) {
     loader.addrecord(scratch);
     std::getline(file, line);
     scratch.read(line);
     currentseq = scratch.get_resseq();
   }
+#ifdef PRINT
+  std::cout << "First residue is finished reading.\nAdding resiude to the "
+               "internal resiude list."
+            << std::endl;
+#endif
+  residues.push_back(loader);
 }
 
 PDB::PDB(std::string filename) {
