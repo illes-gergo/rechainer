@@ -1,7 +1,6 @@
 #pragma once
 
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -25,10 +24,13 @@ public:
   Record(std::string line);
   bool read(std::string line);
   int get_resseq();
+  std::string get_resname();
+  std::string get_chain();
 };
 
 class Residue {
   int resseq;
+  std::string resname;
   std::vector<Record> records;
 
 public:
@@ -38,6 +40,9 @@ public:
   Residue(int resseq, std::vector<Record> records);
   void addrecord(Record record);
   int get_resseq();
+  int get_reccount();
+  std::string get_resname();
+  std::string get_reschain();
 };
 
 class PDB {
@@ -49,6 +54,8 @@ public:
   PDB(std::string filename);
   ~PDB();
   void addresidue(Residue residue);
+  int get_rescount();
+  Residue get_res(int i);
 
 private:
   void initresidues();

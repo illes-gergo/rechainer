@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <fstream>
 #include <iosfwd>
+#include <iostream>
 #include <vector>
 
 // Implementation of records
@@ -12,6 +13,15 @@ Record::Record(std::string line) { read(line); }
 bool Record::read(std::string line) {
   rawline = line;
   if (line.substr(0, 4) == "ATOM") {
+    if (line.length() < 79) {
+#ifdef PRINT
+      std::cerr << "Warning, bad line width, PDB is not in current format!"
+                << std::endl;
+#endif
+      isatom = false;
+      resseq = -1;
+      return false;
+    }
     isatom = true;
     type = line.substr(0, 4);
     atomsnum = stoi(line.substr(6, 5));
@@ -36,6 +46,8 @@ bool Record::read(std::string line) {
 }
 
 int Record::get_resseq() { return resseq; }
+std::string Record::get_resname() { return resname; }
+std::string Record::get_chain() { return chain; }
 
 // Implementation of residues
 
@@ -48,7 +60,8 @@ Residue::Residue(Record record) {
 Residue::Residue() { init(); }
 
 void Residue::init() {
-  resseq = 0;
+  resseq = -1;
+  resname = "";
   records = std::vector<Record>();
 }
 
@@ -62,9 +75,32 @@ Residue::Residue(int resseq, std::vector<Record> records) {
   }
 }
 
-void Residue::addrecord(Record record) { records.push_back(record); }
+void Residue::addrecord(Record record) {
+  if (records.size() == 0 && resname == "") {
+    resseq = record.get_resseq();
+    resname = record.get_resname();
+    records.push_back(record);
+    return;
+  } else {
+    if (resseq != record.get_resseq() && resname != record.get_resname()) {
+#ifdef PRINT
+      std::cout << "Warning, the record got does not belong to this resiude, "
+                   "aborting..."
+                << std::endl;
+#endif
+      return;
+    }
+    records.push_back(record);
+  }
+}
 
 int Residue::get_resseq() { return this->records.back().get_resseq(); }
+std::string Residue::get_resname() {
+  return this->records.back().get_resname();
+}
+
+int Residue::get_reccount() { return records.size(); }
+std::string Residue::get_reschain() { return records.back().get_chain(); }
 
 // Implementation of whole PDB
 
@@ -75,22 +111,21 @@ void PDB::initresidues() {
   file.seekg(0);
   std::streampos filepos = file.tellg();
   bool foundfirst = false;
-  int currentseq, scanseq;
+  int scanseq;
   std::string line;
   Record scratch;
   Residue loader;
-#ifdef DEBUG
-  int counter = 0;
-#endif
+  // #ifdef DEBUG
+  //   int counter = 0;
+  // #endif
   // Find first residue
   while (!foundfirst) {
     if (!std::getline(file, line).eof()) {
       if (line.substr(0, 4) == "ATOM") {
-#ifdef DEBUG
-        std::cout << counter++ << std::endl;
-#endif
+        // #ifdef DEBUG
+        //         std::cout << counter++ << std::endl;
+        // #endif
         scratch.read(line);
-        currentseq = scratch.get_resseq();
         foundfirst = true;
         loader.addrecord(scratch);
       }
@@ -106,20 +141,15 @@ void PDB::initresidues() {
   std::cout << "First residue found, keep reading..." << std::endl;
 #endif
   // If first residue found, then read it
-  std::getline(file, line); // Advance to the next record
-  scratch.read(line);
-  currentseq = scratch.get_resseq();
-  scanseq = currentseq;
-  while (currentseq == scanseq && !file.eof()) {
-#ifdef DEBUG
-    std::cout << counter++ << std::endl;
-#endif
-    loader.addrecord(scratch);
+  scanseq = scratch.get_resseq();
+  while (scratch.get_resseq() == scanseq && !file.eof()) {
+    // #ifdef DEBUG
+    //     std::cout << counter++ << std::endl;
+    // #endif
     filepos = file.tellg();
     std::getline(file, line);
     scratch.read(line);
-    currentseq = scratch.get_resseq();
-    if (currentseq == scanseq)
+    if (scratch.get_resseq() == scanseq)
       loader.addrecord(scratch);
   }
   file.seekg(filepos);
@@ -137,7 +167,7 @@ void PDB::readresidue() {
   std::streampos filepos = file.tellg();
   Residue loader;
   Record scratch;
-  getline(file,line);
+  getline(file, line);
   file.seekg(filepos);
   scratch.read(line);
   int seekseq = scratch.get_resseq();
@@ -145,7 +175,6 @@ void PDB::readresidue() {
   while (!file.eof() && !file.bad() && !file.fail() && seekseq == currentseq) {
     filepos = file.tellg();
     getline(file, line);
-    std::cout << line << std::endl;
     scratch.read(line);
     currentseq = scratch.get_resseq();
     if (currentseq == seekseq && currentseq != -1)
@@ -153,8 +182,8 @@ void PDB::readresidue() {
     if (currentseq == -1) {
 #ifdef PRINT
       std::cout << "No atom in line, skipping... " << std::endl;
-      currentseq = seekseq;
 #endif
+      currentseq = seekseq;
     }
   }
   addresidue(loader);
@@ -177,7 +206,8 @@ PDB::PDB(std::string filename) {
     while (!file.fail() && !file.bad()) {
       readresidue();
 #ifdef PRINT
-      std::cout << "Reading residue " << this->residues.size() << " finished." << std::endl;
+      std::cout << "Reading residue " << this->residues.size() << " finished."
+                << std::endl;
 #endif
     }
   }
@@ -187,3 +217,6 @@ PDB::~PDB() {
   file.close();
   return;
 }
+int PDB::get_rescount() { return residues.size(); }
+
+Residue PDB::get_res(int i) { return residues.at(i); }
