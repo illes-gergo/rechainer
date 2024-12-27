@@ -6,11 +6,11 @@
 #include <vector>
 
 // Implementation of records
-Record::Record() {}
+Atom::Atom() {}
 
-Record::Record(std::string line) { read(line); }
+Atom::Atom(std::string line) { read(line); }
 
-bool Record::read(std::string line) {
+bool Atom::read(std::string line) {
   rawline = line;
   if (line.substr(0, 4) == "ATOM") {
     if (line.length() < 79) {
@@ -45,15 +45,15 @@ bool Record::read(std::string line) {
   }
 }
 
-int Record::get_resseq() { return resseq; }
-std::string Record::get_resname() { return resname; }
-std::string Record::get_chain() { return chain; }
+int Atom::get_resseq() { return resseq; }
+std::string Atom::get_resname() { return resname; }
+std::string Atom::get_chain() { return chain; }
 
 // Implementation of residues
 
-Residue::Residue(Record record) {
+Residue::Residue(Atom record) {
   resseq = record.get_resseq();
-  records = std::vector<Record>();
+  records = std::vector<Atom>();
   records.push_back(record);
 }
 
@@ -62,12 +62,12 @@ Residue::Residue() { init(); }
 void Residue::init() {
   resseq = -1;
   resname = "";
-  records = std::vector<Record>();
+  records = std::vector<Atom>();
 }
 
-Residue::Residue(int resseq, std::vector<Record> records) {
+Residue::Residue(int resseq, std::vector<Atom> records) {
   this->resseq = resseq;
-  this->records = std::vector<Record>();
+  this->records = std::vector<Atom>();
   for (uint i = 0; i < records.size(); i++) {
     if (records.at(i).get_resseq() == this->resseq) {
       this->records.push_back(records.at(i));
@@ -75,7 +75,7 @@ Residue::Residue(int resseq, std::vector<Record> records) {
   }
 }
 
-void Residue::addrecord(Record record) {
+void Residue::addrecord(Atom record) {
   if (records.size() == 0 && resname == "") {
     resseq = record.get_resseq();
     resname = record.get_resname();
@@ -113,7 +113,7 @@ void PDB::initresidues() {
   bool foundfirst = false;
   int scanseq;
   std::string line;
-  Record scratch;
+  Atom scratch;
   Residue loader;
   // #ifdef DEBUG
   //   int counter = 0;
@@ -166,7 +166,7 @@ void PDB::readresidue() {
   std::string line;
   std::streampos filepos = file.tellg();
   Residue loader;
-  Record scratch;
+  Atom scratch;
   getline(file, line);
   file.seekg(filepos);
   scratch.read(line);

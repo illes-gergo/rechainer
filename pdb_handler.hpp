@@ -12,7 +12,7 @@
 #endif
 #endif
 
-class Record {
+class Atom {
   bool isatom;
   std::string type, atomname, resname, chain, symbol, charge;
   std::string rawline;
@@ -20,8 +20,8 @@ class Record {
   double x, y, z;
 
 public:
-  Record();
-  Record(std::string line);
+  Atom();
+  Atom(std::string line);
   bool read(std::string line);
   int get_resseq();
   std::string get_resname();
@@ -31,14 +31,14 @@ public:
 class Residue {
   int resseq;
   std::string resname;
-  std::vector<Record> records;
+  std::vector<Atom> records;
 
 public:
   void init();
   Residue();
-  Residue(Record record);
-  Residue(int resseq, std::vector<Record> records);
-  void addrecord(Record record);
+  Residue(Atom record);
+  Residue(int resseq, std::vector<Atom> records);
+  void addrecord(Atom record);
   int get_resseq();
   int get_reccount();
   std::string get_resname();
