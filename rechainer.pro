@@ -5,7 +5,7 @@
 TEMPLATE = app
 TARGET = rechainer
 INCLUDEPATH += .
-QT += widgets
+QT += widgets 3dcore 3drender 3dextras
 CONFIG += debug
 
 # You can make your code fail to compile if you use deprecated APIs.
@@ -16,5 +16,5 @@ CONFIG += debug
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # Input
-HEADERS += mainwindow.hpp pdb_handler.hpp
-SOURCES += main.cpp mainwindow.cpp pdb_handler.cpp
+HEADERS += mainwindow.hpp pdb_handler.hpp renderer.hpp
+SOURCES += main.cpp mainwindow.cpp pdb_handler.cpp renderer.cpp

@@ -53,8 +53,8 @@ std::string Atom::get_chain() { return chain; }
 
 Residue::Residue(Atom record) {
   resseq = record.get_resseq();
-  records = std::vector<Atom>();
-  records.push_back(record);
+  atoms = std::vector<Atom>();
+  atoms.push_back(record);
 }
 
 Residue::Residue() { init(); }
@@ -62,24 +62,24 @@ Residue::Residue() { init(); }
 void Residue::init() {
   resseq = -1;
   resname = "";
-  records = std::vector<Atom>();
+  atoms = std::vector<Atom>();
 }
 
 Residue::Residue(int resseq, std::vector<Atom> records) {
   this->resseq = resseq;
-  this->records = std::vector<Atom>();
+  this->atoms = std::vector<Atom>();
   for (uint i = 0; i < records.size(); i++) {
     if (records.at(i).get_resseq() == this->resseq) {
-      this->records.push_back(records.at(i));
+      this->atoms.push_back(records.at(i));
     }
   }
 }
 
 void Residue::addrecord(Atom record) {
-  if (records.size() == 0 && resname == "") {
+  if (atoms.size() == 0 && resname == "") {
     resseq = record.get_resseq();
     resname = record.get_resname();
-    records.push_back(record);
+    atoms.push_back(record);
     return;
   } else {
     if (resseq != record.get_resseq() && resname != record.get_resname()) {
@@ -90,17 +90,17 @@ void Residue::addrecord(Atom record) {
 #endif
       return;
     }
-    records.push_back(record);
+    atoms.push_back(record);
   }
 }
 
-int Residue::get_resseq() { return this->records.back().get_resseq(); }
+int Residue::get_resseq() { return this->atoms.back().get_resseq(); }
 std::string Residue::get_resname() {
-  return this->records.back().get_resname();
+  return this->atoms.back().get_resname();
 }
 
-int Residue::get_reccount() { return records.size(); }
-std::string Residue::get_reschain() { return records.back().get_chain(); }
+int Residue::get_reccount() { return atoms.size(); }
+std::string Residue::get_reschain() { return atoms.back().get_chain(); }
 
 // Implementation of whole PDB
 

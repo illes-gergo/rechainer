@@ -12,12 +12,25 @@
 #endif
 #endif
 
+class Atom;
+class Residue;
+
+class Connection {
+  Atom* atoms[2];
+  Residue* residues[2];
+
+public:
+
+};
+
 class Atom {
+private:
   bool isatom;
   std::string type, atomname, resname, chain, symbol, charge;
   std::string rawline;
   int atomsnum, resseq;
   double x, y, z;
+  Residue* partof;
 
 public:
   Atom();
@@ -31,7 +44,7 @@ public:
 class Residue {
   int resseq;
   std::string resname;
-  std::vector<Atom> records;
+  std::vector<Atom> atoms;
 
 public:
   void init();

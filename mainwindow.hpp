@@ -5,14 +5,16 @@
 #include "qlineedit.h"
 #include "qpushbutton.h"
 #include "qtablewidget.h"
+#include "renderer.hpp"
 #include <QtWidgets/QtWidgets>
 
 class MainWindow : public QWidget {
   Q_OBJECT;
-  QPushButton *load_file;
+  QPushButton *load_file, *show_render;
   QVBoxLayout *layout;
   QTableWidget *table;
   PDB *file;
+  RenderWindow *render_window;
 
 public:
   MainWindow(QWidget *parent = nullptr);
