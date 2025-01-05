@@ -24,11 +24,11 @@ RenderWindow::RenderWindow() {
   randgen = new QRandomGenerator();
 #endif
 
-  cameraEntity->lens()->setPerspectiveProjection(60.0f, 16.0f / 9.0f, 0.1f,
+  cameraEntity->lens()->setPerspectiveProjection(50.0f, 16.0f / 9.0f, 0.01f,
                                                  1000.0f);
   light->setIntensity(1);
   light->setColor("white");
-  cameraEntity->setPosition(QVector3D(50, 0, 0));
+  cameraEntity->setPosition(QVector3D(10, 0, 0));
   cameraEntity->setUpVector(QVector3D(0, 1, 0));
   cameraEntity->setViewCenter(QVector3D(0, 0, 0));
   camController->setCamera(cameraEntity);
@@ -37,7 +37,8 @@ RenderWindow::RenderWindow() {
   this->setRootEntity(scene);
 }
 
-void RenderWindow::CreateSingleSphere(float x, float y, float z, float radius, int color) {
+void RenderWindow::CreateSingleSphere(float x, float y, float z, float radius,
+                                      int color) {
   auto *sphere = new Qt3DCore::QEntity(scene);
   objects->push_back(sphere);
   auto *mesh = new Qt3DExtras::QSphereMesh;
@@ -59,4 +60,8 @@ void RenderWindow::viewScene() {
 #endif
 
   this->show();
+}
+
+void RenderWindow::setCameraTarget(double x, double y, double z) {
+  this->cameraEntity->setViewCenter(QVector3D(x, y, z));
 }

@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-#define PRINT
-#define DEBUG
+// #define PRINT
+// #define DEBUG
 #ifdef DEBUG
 #ifndef PRINT
 #define PRINT
@@ -15,13 +15,10 @@
 class Atom;
 class Residue;
 
-class Connection {
-  Atom* atoms[2];
-  Residue* residues[2];
-
-public:
-
-};
+typedef struct {
+  int ResCoord;
+  int AtomCoord;
+} InternalCoordinate;
 
 class Atom {
 private:
@@ -30,13 +27,14 @@ private:
   std::string rawline;
   int atomsnum, resseq;
   double x, y, z;
-  Residue* partof;
+  Residue *partof;
 
 public:
   Atom();
   Atom(std::string line);
   bool read(std::string line);
   int get_resseq();
+  int get_id();
   std::string get_resname();
   std::string get_chain();
   std::vector<double> position();
@@ -73,8 +71,12 @@ public:
   int get_rescount();
   Residue get_res(int i);
   std::vector<Residue> get_resvec();
+  std::vector<InternalCoordinate[2]> connections;
 
 private:
-  void initresidues();
-  void readresidue();
+  void readresidues();
+  void readconnections();
+  void addif_needed(std::vector<int> ids);
 };
+
+std::vector<int> extractValues(std::string line);

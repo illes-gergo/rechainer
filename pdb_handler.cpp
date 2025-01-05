@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iosfwd>
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 // Implementation of records
@@ -46,6 +47,7 @@ bool Atom::read(std::string line) {
 }
 
 int Atom::get_resseq() { return resseq; }
+int Atom::get_id() { return atomsnum; }
 std::string Atom::get_resname() { return resname; }
 std::string Atom::get_chain() { return chain; }
 
@@ -104,63 +106,7 @@ std::string Residue::get_reschain() { return atoms.back().get_chain(); }
 
 void PDB::addresidue(Residue residue) { this->residues.push_back(residue); }
 
-void PDB::initresidues() {
-  file.clear();
-  file.seekg(0);
-  std::streampos filepos = file.tellg();
-  bool foundfirst = false;
-  int scanseq;
-  std::string line;
-  Atom scratch;
-  Residue loader;
-  // #ifdef DEBUG
-  //   int counter = 0;
-  // #endif
-  // Find first residue
-  while (!foundfirst) {
-    if (!std::getline(file, line).eof()) {
-      if (line.substr(0, 4) == "ATOM") {
-        // #ifdef DEBUG
-        //         std::cout << counter++ << std::endl;
-        // #endif
-        scratch.read(line);
-        foundfirst = true;
-        loader.addrecord(scratch);
-      }
-
-    } else {
-#ifdef PRINT
-      std::cerr << "First residue not found!" << std::endl;
-#endif
-      break;
-    }
-  }
-#ifdef PRINT
-  std::cout << "First residue found, keep reading..." << std::endl;
-#endif
-  // If first residue found, then read it
-  scanseq = scratch.get_resseq();
-  while (scratch.get_resseq() == scanseq && !file.eof()) {
-    // #ifdef DEBUG
-    //     std::cout << counter++ << std::endl;
-    // #endif
-    filepos = file.tellg();
-    std::getline(file, line);
-    scratch.read(line);
-    if (scratch.get_resseq() == scanseq)
-      loader.addrecord(scratch);
-  }
-  file.seekg(filepos);
-#ifdef PRINT
-  std::cout << "First residue is finished reading.\nAdding resiude to the "
-               "internal resiude list."
-            << std::endl;
-#endif
-  addresidue(loader);
-  return;
-}
-
-void PDB::readresidue() {
+void PDB::readresidues() {
   std::string line;
   std::streampos filepos = file.tellg();
   Residue loader;
@@ -195,20 +141,49 @@ PDB::PDB(std::string filename) {
 #endif
   file = std::ifstream(filename, std::ios_base::in);
   residues = std::vector<Residue>();
+  connections = std::vector<InternalCoordinate[2]>();
   if (file.fail() || file.bad()) {
 #ifdef PRINT
     std::cout << "File " << filename << " cannot be opened!" << std::endl;
 #endif
   } else {
-    initresidues();
+    // initresidues();
     while (!file.fail() && !file.bad()) {
-      readresidue();
+      readresidues();
 #ifdef PRINT
       std::cout << "Reading residue " << this->residues.size() << " finished."
                 << std::endl;
 #endif
     }
+    file.clear();
+    file.seekg(0);
+    while (!file.fail() && !file.bad() && !file.eof()) {
+      readconnections();
+    }
   }
+}
+
+void PDB::readconnections() {
+  std::string line;
+  getline(file, line);
+  if (line.substr(0, 6) != "CONECT") {
+  } else {
+    auto conndata = line.substr(6);
+    auto nums = extractValues(conndata);
+    addif_needed(nums);
+  }
+}
+
+void PDB::addif_needed(std::vector<int> ids) { int base_id = ids[0]; }
+
+std::vector<int> extractValues(std::string line) {
+  auto retval = std::vector<int>();
+  int f;
+  std::stringstream ss(line);
+  while (ss >> f) {
+    retval.push_back(f);
+  }
+  return retval;
 }
 
 PDB::~PDB() {
@@ -226,6 +201,4 @@ std::vector<Atom> Residue::get_atomvec() { return this->atoms; }
 std::vector<double> Atom::position() {
   return std::vector<double>{this->x, this->y, this->z};
 }
-std::string Atom::get_symbol(){
-  return this->symbol;
-}
+std::string Atom::get_symbol() { return this->symbol; }

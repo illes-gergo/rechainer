@@ -32,6 +32,7 @@ private:
 public:
   RenderWindow();
   void CreateSingleSphere(float x, float y, float z, float radius, int color=0xffffff);
+  void setCameraTarget(double x, double y, double z);
 
 public slots:
   void viewScene();

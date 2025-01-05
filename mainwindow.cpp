@@ -63,6 +63,9 @@ void MainWindow::fillTable() {
 }
 
 void MainWindow::renderPDB() {
+  double xc = 0, yc = 0, zc = 0;
+  double count = 0;
+
   if (!loaded)
     return;
 
@@ -83,8 +86,13 @@ void MainWindow::renderPDB() {
         color = 0xffff00;
       render_window->CreateSingleSphere(coords[0], coords[1], coords[2], 0.4,
                                         color);
+      xc += coords[0];
+      yc += coords[1];
+      zc += coords[2];
+      count += 1;
     }
   }
+  render_window->setCameraTarget(xc/count,yc/count,zc/count);
 }
 
 void MainWindow::readSlot() {
