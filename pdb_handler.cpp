@@ -141,7 +141,7 @@ PDB::PDB(std::string filename) {
 #endif
   file = std::ifstream(filename, std::ios_base::in);
   residues = std::vector<Residue>();
-  connections = std::vector<InternalCoordinate[2]>();
+  connections = std::vector<Connection>();
   if (file.fail() || file.bad()) {
 #ifdef PRINT
     std::cout << "File " << filename << " cannot be opened!" << std::endl;
@@ -170,11 +170,66 @@ void PDB::readconnections() {
   } else {
     auto conndata = line.substr(6);
     auto nums = extractValues(conndata);
+    std::cout << "Valid connection data found" << std::endl;
     addif_needed(nums);
   }
 }
 
-void PDB::addif_needed(std::vector<int> ids) { int base_id = ids[0]; }
+InternalCoordinate PDB::findInternal(int id) {
+  int base_res = 0, base_atom = 0;
+  for (auto res : residues) {
+    base_atom = 0;
+    for (auto atom : res.get_atomvec()) {
+      if (atom.get_id() == id)
+        goto the_way_out;
+      base_atom++;
+    }
+    base_res++;
+  }
+the_way_out:
+  return InternalCoordinate{base_res, base_atom};
+}
+
+bool sameInternal(InternalCoordinate first, InternalCoordinate second) {
+  if (first.AtomCoord == second.AtomCoord &&
+      first.ResCoord == second.ResCoord) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool sameConnection(Connection first, Connection second) {
+  if ((sameInternal(first[0], second[0]) &&
+       sameInternal(first[1], second[1])) ||
+      (sameInternal(first[1], second[0]) &&
+       sameInternal(first[0], second[1]))) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void PDB::addif_needed(std::vector<int> ids) {
+  int base_id = ids[0];
+  std::vector<int> connect_ids(ids.begin() + 1, ids.end());
+  InternalCoordinate base_coord = findInternal(base_id);
+  InternalCoordinate test_coord;
+  Connection test_connection;
+  for (auto id : connect_ids) {
+    test_coord = findInternal(id);
+    test_connection = Connection{base_coord, test_coord};
+    for (auto connection : connections) {
+      if (sameConnection(test_connection, connection)) {
+        goto skip_add;
+      }
+    }
+    connections.push_back(test_connection);
+    std::cout << "Unique connection found" << std::endl;
+  skip_add:
+    continue;
+  }
+}
 
 std::vector<int> extractValues(std::string line) {
   auto retval = std::vector<int>();
@@ -202,3 +257,5 @@ std::vector<double> Atom::position() {
   return std::vector<double>{this->x, this->y, this->z};
 }
 std::string Atom::get_symbol() { return this->symbol; }
+
+std::vector<Connection> PDB::get_connections() { return this->connections; }

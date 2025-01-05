@@ -1,5 +1,6 @@
 #include "./renderer.hpp"
 #include "qcamera.h"
+#include "qcylindermesh.h"
 #include "qdirectionallight.h"
 #include "qentity.h"
 #include "qorbitcameracontroller.h"
@@ -19,7 +20,8 @@ RenderWindow::RenderWindow() {
   light = new Qt3DRender::QPointLight(light_entity);
   light_entity->addComponent(light);
   camController = new Qt3DExtras::QOrbitCameraController(cameraEntity);
-  objects = new std::vector<Qt3DCore::QEntity *>();
+  AtomicBallz = new std::vector<Qt3DCore::QEntity *>();
+  CylindricShafts = new std::vector<Qt3DCore::QEntity *>();
 #ifdef DEBUG
   randgen = new QRandomGenerator();
 #endif
@@ -40,7 +42,7 @@ RenderWindow::RenderWindow() {
 void RenderWindow::CreateSingleSphere(float x, float y, float z, float radius,
                                       int color) {
   auto *sphere = new Qt3DCore::QEntity(scene);
-  objects->push_back(sphere);
+  AtomicBallz->push_back(sphere);
   auto *mesh = new Qt3DExtras::QSphereMesh;
   auto *transform = new Qt3DCore::QTransform();
   auto *material = new Qt3DExtras::QPhongMaterial();
@@ -64,4 +66,19 @@ void RenderWindow::viewScene() {
 
 void RenderWindow::setCameraTarget(double x, double y, double z) {
   this->cameraEntity->setViewCenter(QVector3D(x, y, z));
+}
+void RenderWindow::CreateSingleCylinder(float x, float y, float z, float length,
+                                        float anglex,float angley,float anglez, float radius) {
+  auto *cylinder = new Qt3DCore::QEntity(scene);
+  auto *mesh = new Qt3DExtras::QCylinderMesh();
+  auto *transform = new Qt3DCore::QTransform();
+  auto *material = new Qt3DExtras::QPhongMaterial();
+  mesh->setRadius(radius);
+  mesh->setLength(length);
+  transform->setTranslation(QVector3D(x,y,z));
+  transform->setRotation(QQuaternion::rotationTo(QVector3D(0,1,0),QVector3D(anglex,angley,anglez)));
+
+  cylinder->addComponent(mesh);
+  cylinder->addComponent(material);
+  cylinder->addComponent(transform);
 }

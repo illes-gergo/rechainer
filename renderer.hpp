@@ -24,15 +24,19 @@ private:
   std::vector<Qt3DCore::QEntity> *atoms;
   Qt3DRender::QCamera *cameraEntity;
   Qt3DExtras::QOrbitCameraController *camController;
-  std::vector<Qt3DCore::QEntity *> *objects;
+  std::vector<Qt3DCore::QEntity *> *AtomicBallz, *CylindricShafts;
 
 #ifdef DEBUG
   QRandomGenerator *randgen;
 #endif
 public:
   RenderWindow();
-  void CreateSingleSphere(float x, float y, float z, float radius, int color=0xffffff);
+  void CreateSingleSphere(float x, float y, float z, float radius,
+                          int color = 0xffffff);
   void setCameraTarget(double x, double y, double z);
+  void CreateSingleCylinder(float x, float y, float z, float lenght,
+                            float anglex = 0, float angley = 0,
+                            float anglez = 0, float radius = 0.15);
 
 public slots:
   void viewScene();

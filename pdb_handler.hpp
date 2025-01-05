@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -19,6 +20,8 @@ typedef struct {
   int ResCoord;
   int AtomCoord;
 } InternalCoordinate;
+
+typedef std::array<InternalCoordinate, 2> Connection;
 
 class Atom {
 private:
@@ -63,6 +66,7 @@ class PDB {
   std::ifstream file;
   std::vector<Residue> residues;
   bool readonly = true;
+  std::vector<Connection> connections;
 
 public:
   PDB(std::string filename);
@@ -71,12 +75,15 @@ public:
   int get_rescount();
   Residue get_res(int i);
   std::vector<Residue> get_resvec();
-  std::vector<InternalCoordinate[2]> connections;
+  std::vector<Connection> get_connections();
 
 private:
   void readresidues();
   void readconnections();
   void addif_needed(std::vector<int> ids);
+  InternalCoordinate findInternal(int id);
 };
 
 std::vector<int> extractValues(std::string line);
+bool sameConnection(Connection first, Connection second);
+bool sameInternal(InternalCoordinate first, InternalCoordinate second);
