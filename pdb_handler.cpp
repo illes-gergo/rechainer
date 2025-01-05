@@ -95,9 +95,7 @@ void Residue::addrecord(Atom record) {
 }
 
 int Residue::get_resseq() { return this->atoms.back().get_resseq(); }
-std::string Residue::get_resname() {
-  return this->atoms.back().get_resname();
-}
+std::string Residue::get_resname() { return this->atoms.back().get_resname(); }
 
 int Residue::get_reccount() { return atoms.size(); }
 std::string Residue::get_reschain() { return atoms.back().get_chain(); }
@@ -220,3 +218,14 @@ PDB::~PDB() {
 int PDB::get_rescount() { return residues.size(); }
 
 Residue PDB::get_res(int i) { return residues.at(i); }
+
+std::vector<Residue> PDB::get_resvec() { return this->residues; }
+
+std::vector<Atom> Residue::get_atomvec() { return this->atoms; }
+
+std::vector<double> Atom::position() {
+  return std::vector<double>{this->x, this->y, this->z};
+}
+std::string Atom::get_symbol(){
+  return this->symbol;
+}

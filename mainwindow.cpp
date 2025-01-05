@@ -6,6 +6,7 @@
 #include "qpushbutton.h"
 #include "qtablewidget.h"
 #include "renderer.hpp"
+#include <iostream>
 #include <string>
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
@@ -61,9 +62,35 @@ void MainWindow::fillTable() {
   }
 }
 
+void MainWindow::renderPDB() {
+  if (!loaded)
+    return;
+
+  for (auto residue : file->get_resvec()) {
+    for (auto atom : residue.get_atomvec()) {
+      auto coords = atom.position();
+      auto element = atom.get_symbol();
+      int color = 0x808080;
+      if (element == " C")
+        color = 0x00ff00;
+      if (element == " N")
+        color = 0x0000ff;
+      if (element == " O")
+        color = 0xff0000;
+      if (element == " H")
+        color = 0xffffff;
+      if (element == " S")
+        color = 0xffff00;
+      render_window->CreateSingleSphere(coords[0], coords[1], coords[2], 0.4,
+                                        color);
+    }
+  }
+}
+
 void MainWindow::readSlot() {
   file = new PDB(QFileDialog::getOpenFileName().toStdString());
   loaded = true;
   fillTable();
   table->update();
+  renderPDB();
 }

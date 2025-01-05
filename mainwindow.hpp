@@ -25,4 +25,5 @@ public slots:
 private:
   bool loaded;
   void fillTable();
+  void renderPDB();
 };

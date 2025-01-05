@@ -5,6 +5,7 @@
 #include "qorbitcameracontroller.h"
 #include "qpointlight.h"
 #include "qrandom.h"
+#include "qvector3d.h"
 #include <Qt3DCore>
 #include <Qt3DExtras>
 #include <Qt3DInput>
@@ -12,15 +13,15 @@
 #include <vector>
 
 #ifndef DEBUG
-//#define DEBUG
+// #define DEBUG
 #endif
 
 class RenderWindow : public Qt3DExtras::Qt3DWindow {
 
 private:
-  Qt3DCore::QEntity *scene;
+  Qt3DCore::QEntity *scene, *light_entity;
+  Qt3DRender::QPointLight *light;
   std::vector<Qt3DCore::QEntity> *atoms;
-  Qt3DRender::QDirectionalLight *light;
   Qt3DRender::QCamera *cameraEntity;
   Qt3DExtras::QOrbitCameraController *camController;
   std::vector<Qt3DCore::QEntity *> *objects;
@@ -30,7 +31,7 @@ private:
 #endif
 public:
   RenderWindow();
-  void CreateSingleSphere(float x, float y, float z, float radius);
+  void CreateSingleSphere(float x, float y, float z, float radius, int color=0xffffff);
 
 public slots:
   void viewScene();
