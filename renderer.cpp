@@ -47,8 +47,11 @@ void RenderWindow::CreateSingleSphere(float x, float y, float z, float radius,
   auto *transform = new Qt3DCore::QTransform();
   auto *material = new Qt3DExtras::QPhongMaterial();
   material->setDiffuse(QColor(QRgb(color)));
+  material->setShininess(0);
   transform->setTranslation(QVector3D(x, y, z));
   mesh->setRadius(radius);
+  mesh->setRings(8);
+  mesh->setSlices(8);
   sphere->addComponent(mesh);
   sphere->addComponent(material);
   sphere->addComponent(transform);
@@ -76,6 +79,9 @@ void RenderWindow::CreateSingleCylinder(float x, float y, float z, float length,
   auto *material = new Qt3DExtras::QPhongMaterial();
   mesh->setRadius(radius);
   mesh->setLength(length);
+  material->setShininess(0);
+  mesh->setRings(8);
+  mesh->setSlices(8);
   transform->setTranslation(QVector3D(x, y, z));
   transform->setRotation(QQuaternion::rotationTo(
       QVector3D(0, 1, 0), QVector3D(anglex, angley, anglez)));

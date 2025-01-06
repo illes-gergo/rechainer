@@ -13,7 +13,7 @@ Atom::Atom(std::string line) { read(line); }
 
 bool Atom::read(std::string line) {
   rawline = line;
-  if (line.substr(0, 4) == "ATOM") {
+  if (line.substr(0, 4) == "ATOM" || line.substr(0,4) == "HETA") {
     if (line.length() < 79) {
 #ifdef PRINT
       std::cerr << "Warning, bad line width, PDB is not in current format!"
