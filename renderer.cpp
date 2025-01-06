@@ -50,7 +50,7 @@ void RenderWindow::CreateSingleSphere(float x, float y, float z, float radius,
   material->setShininess(0);
   transform->setTranslation(QVector3D(x, y, z));
   mesh->setRadius(radius);
-  mesh->setRings(8);
+  mesh->setRings(3);
   mesh->setSlices(8);
   sphere->addComponent(mesh);
   sphere->addComponent(material);
@@ -80,8 +80,8 @@ void RenderWindow::CreateSingleCylinder(float x, float y, float z, float length,
   mesh->setRadius(radius);
   mesh->setLength(length);
   material->setShininess(0);
-  mesh->setRings(8);
-  mesh->setSlices(8);
+  mesh->setRings(2);
+  mesh->setSlices(6);
   transform->setTranslation(QVector3D(x, y, z));
   transform->setRotation(QQuaternion::rotationTo(
       QVector3D(0, 1, 0), QVector3D(anglex, angley, anglez)));
