@@ -170,7 +170,7 @@ void PDB::readconnections() {
   } else {
     auto conndata = line.substr(6);
     auto nums = extractValues(conndata);
-    std::cout << "Valid connection data found" << std::endl;
+    // std::cout << "Valid connection data found" << std::endl;
     addif_needed(nums);
   }
 }
@@ -225,7 +225,7 @@ void PDB::addif_needed(std::vector<int> ids) {
       }
     }
     connections.push_back(test_connection);
-    std::cout << "Unique connection found" << std::endl;
+    //std::cout << "Unique connection found" << std::endl;
   skip_add:
     continue;
   }

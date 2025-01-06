@@ -21,10 +21,9 @@ class RenderWindow : public Qt3DExtras::Qt3DWindow {
 private:
   Qt3DCore::QEntity *scene, *light_entity;
   Qt3DRender::QPointLight *light;
-  std::vector<Qt3DCore::QEntity> *atoms;
   Qt3DRender::QCamera *cameraEntity;
   Qt3DExtras::QOrbitCameraController *camController;
-  std::vector<Qt3DCore::QEntity *> *AtomicBallz, *CylindricShafts;
+  //std::vector<Qt3DCore::QEntity *> *AtomicBallz, *CylindricShafts;
 
 #ifdef DEBUG
   QRandomGenerator *randgen;
@@ -40,4 +39,5 @@ public:
 
 public slots:
   void viewScene();
+  void closeEvent(QCloseEvent *ev);
 };

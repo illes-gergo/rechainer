@@ -22,7 +22,6 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
   layout = new QVBoxLayout();
   table = new QTableWidget();
   table->setEditTriggers(QAbstractItemView::NoEditTriggers);
-  render_window = new RenderWindow();
 
   // Layout
   layout->addWidget(load_file);
@@ -30,11 +29,11 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
   layout->addWidget(table);
   setLayout(layout);
   resize(800, 600);
+  render_window = new RenderWindow();
 
   // Events
   connect(load_file, &QPushButton::clicked, this, &MainWindow::readSlot);
-  connect(show_render, &QPushButton::clicked, render_window,
-          &RenderWindow::viewScene);
+  connect(show_render, &QPushButton::clicked, this, &MainWindow::renderSlot);
 }
 
 void MainWindow::fillTable() {
@@ -66,6 +65,7 @@ void MainWindow::fillTable() {
 }
 
 void MainWindow::renderPDB() {
+
   double xc = 0, yc = 0, zc = 0;
   double xp = 0, yp = 0, zp = 0;
   double xm = 0, ym = 0, zm = 0, dist = 0;
@@ -87,7 +87,7 @@ void MainWindow::renderPDB() {
       auto element = atom.get_symbol();
       int color = 0x808080;
       radius = 1.5;
-      if (element == " C"){
+      if (element == " C") {
         color = 0x00ff00;
         radius = 1.7;
       }
@@ -142,5 +142,10 @@ void MainWindow::readSlot() {
   loaded = true;
   fillTable();
   table->update();
+}
+
+void MainWindow::renderSlot() {
+  render_window = new RenderWindow();
   renderPDB();
+  render_window->viewScene();
 }

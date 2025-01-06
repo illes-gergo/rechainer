@@ -21,6 +21,7 @@ public:
 
 public slots:
   void readSlot();
+  void renderSlot();
 
 private:
   bool loaded;
