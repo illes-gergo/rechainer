@@ -1,11 +1,10 @@
 #pragma once
 
-#include <array>
 #include <fstream>
 #include <string>
 #include <vector>
 
-// #define PRINT
+#define PRINT
 // #define DEBUG
 #ifdef DEBUG
 #ifndef PRINT
@@ -13,77 +12,30 @@
 #endif
 #endif
 
-class Atom;
-class Residue;
+typedef struct {
+  int serialNumber, resSeq, charge;
+  char atomName[4], resName[3], chainID, element[2];
+  double x, y, z;
+  double occupancy;
+} ATOM;
 
 typedef struct {
-  int ResCoord;
-  int AtomCoord;
-} InternalCoordinate;
+  char resname[3], chainID;
+  int resSeq;
+  std::vector<int> atomIndex;
+} RESIDUE;
 
-typedef std::array<InternalCoordinate, 2> Connection;
-
-class Atom {
-private:
-  bool isatom;
-  std::string type, atomname, resname, chain, symbol, charge;
-  std::string rawline;
-  int atomsnum, resseq;
-  double x, y, z;
-  Residue *partof;
-
+class PDBFile {
 public:
-  Atom();
-  Atom(std::string line);
-  bool read(std::string line);
-  int get_resseq();
-  int get_id();
-  std::string get_resname();
-  std::string get_chain();
-  std::vector<double> position();
-  std::string get_symbol();
-};
-
-class Residue {
-  int resseq;
-  std::string resname;
-  std::vector<Atom> atoms;
-
-public:
-  void init();
-  Residue();
-  Residue(Atom record);
-  Residue(int resseq, std::vector<Atom> records);
-  void addrecord(Atom record);
-  int get_resseq();
-  int get_reccount();
-  std::string get_resname();
-  std::string get_reschain();
-  std::vector<Atom> get_atomvec();
-};
-
-class PDB {
+  std::string fileName;
   std::ifstream file;
-  std::vector<Residue> residues;
-  bool readonly = true;
-  std::vector<Connection> connections;
+  std::vector<RESIDUE *> residues;
+  std::vector<ATOM *> atoms;
+  int atomCount;
+  int resCount;
 
-public:
-  PDB(std::string filename);
-  ~PDB();
-  void addresidue(Residue residue);
-  int get_rescount();
-  Residue get_res(int i);
-  std::vector<Residue> get_resvec();
-  std::vector<Connection> get_connections();
+  PDBFile(std::string);
 
-private:
-  void readresidues();
-  void readconnections();
-  void addif_needed(std::vector<int> ids);
-  InternalCoordinate findInternal(int id);
+  void openPDB(std::string fileName);
+  void parsePDB();
 };
-
-std::vector<int> extractValues(std::string line);
-bool sameConnection(Connection first, Connection second);
-bool sameInternal(InternalCoordinate first, InternalCoordinate second);

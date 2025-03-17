@@ -2,7 +2,6 @@
 
 #include "pdb_handler.hpp"
 #include "qboxlayout.h"
-#include "qlineedit.h"
 #include "qpushbutton.h"
 #include "qtablewidget.h"
 #include "renderer.hpp"
@@ -13,7 +12,7 @@ class MainWindow : public QWidget {
   QPushButton *load_file, *show_render;
   QVBoxLayout *layout;
   QTableWidget *table;
-  PDB *file;
+  PDBFile *file;
   RenderWindow *render_window;
 
 public:
@@ -21,10 +20,8 @@ public:
 
 public slots:
   void readSlot();
-  void renderSlot();
 
 private:
   bool loaded;
   void fillTable();
-  void renderPDB();
 };
