@@ -4,6 +4,7 @@
 #include "qboxlayout.h"
 #include "qpushbutton.h"
 #include "qtablewidget.h"
+#include "renderer.hpp"
 #include <QtWidgets/QtWidgets>
 
 class MainWindow : public QWidget {
@@ -12,6 +13,7 @@ class MainWindow : public QWidget {
   QVBoxLayout *layout;
   QTableWidget *table;
   PDBFile *file;
+  RenderWindow *rwin;
 
 public:
   MainWindow(QWidget *parent = nullptr);

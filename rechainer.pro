@@ -6,7 +6,7 @@ TEMPLATE = app
 TARGET = rechainer
 INCLUDEPATH += .
 INCLUDEPATH += /usr/include/vtk
-LIBS += /usr/lib/libvtksys.so /usr/lib/libvtkGUISupportQt.so
+LIBS += ./librenderlib.so
 QMAKE_LFLAGS += -Wl,--copy-dt-needed-entries
 QT += widgets openglwidgets
 CONFIG += debug
@@ -20,4 +20,4 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs depr
 
 # Input
 HEADERS += mainwindow.hpp pdb_handler.hpp renderer.hpp
-SOURCES += main.cpp mainwindow.cpp pdb_handler.cpp renderer.cpp
+SOURCES += main.cpp mainwindow.cpp pdb_handler.cpp
