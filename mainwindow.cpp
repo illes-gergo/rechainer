@@ -31,9 +31,13 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
   layout->addWidget(table);
   setLayout(layout);
   resize(800, 600);
+  
+  rwin = new RenderWindow(file);
 
   // Events
   connect(load_file, &QPushButton::clicked, this, &MainWindow::readSlot);
+  connect(show_render, &QPushButton::clicked, rwin, &RenderWindow::renderSlot);
+
 }
 
 void MainWindow::fillTable() {
@@ -73,4 +77,5 @@ void MainWindow::readSlot() {
   loaded = true;
   fillTable();
   table->update();
+  rwin->file = this->file;
 }
