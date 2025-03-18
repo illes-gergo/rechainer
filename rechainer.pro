@@ -5,8 +5,11 @@
 TEMPLATE = app
 TARGET = rechainer
 INCLUDEPATH += .
-QT += widgets 3dcore 3drender 3dextras
-#CONFIG += debug
+INCLUDEPATH += /usr/include/vtk
+LIBS += /usr/lib/libvtksys.so /usr/lib/libvtkGUISupportQt.so
+QMAKE_LFLAGS += -Wl,--copy-dt-needed-entries
+QT += widgets openglwidgets
+CONFIG += debug
 
 # You can make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
