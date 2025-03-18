@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #define PRINT
 // #define DEBUG
@@ -22,15 +23,15 @@ typedef struct {
 typedef struct {
   char resname[3], chainID;
   int resSeq;
-  std::vector<int> atomIndex;
+  std::vector<int> atomID;
 } RESIDUE;
 
 class PDBFile {
 public:
   std::string fileName;
   std::ifstream file;
-  std::vector<RESIDUE *> residues;
-  std::vector<ATOM *> atoms;
+  std::unordered_map<int, RESIDUE> residues;
+  std::unordered_map<int, ATOM> atoms;
   int atomCount;
   int resCount;
 
