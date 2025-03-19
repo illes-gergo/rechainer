@@ -12,8 +12,6 @@
 #include <string>
 #include <unordered_map>
 
-#define VDW_DIVISOR 4
-
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
   loaded = false;
   this->setWindowTitle("ReChainer");

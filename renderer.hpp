@@ -1,4 +1,5 @@
 #pragma once
+#include <vtkGlyph3DMapper.h>
 #include <QVTKOpenGLNativeWidget.h>
 #include <vtkActor.h>
 #include <vtkDataSetMapper.h>
@@ -8,6 +9,7 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkSphereSource.h>
+#include <vtkCylinderSource.h>
 #include <vtkGlyph3D.h>
 
 
@@ -28,6 +30,9 @@
 #include <vtkUnsignedShortArray.h>
 #include <vtkFloatArray.h>
 #include <vtkType.h>
+#include <vtkArrowSource.h>
+#include <vtkLineSource.h>
+#include <vtkTubeFilter.h>
 
 
 #include <QApplication>

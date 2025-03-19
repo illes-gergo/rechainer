@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
 if(POLICY CMP0020)
   cmake_policy(SET CMP0020 NEW)
   cmake_policy(SET CMP0071 NEW)
