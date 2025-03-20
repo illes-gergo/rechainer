@@ -1,5 +1,6 @@
 #pragma once
 #include <vtkGlyph3DMapper.h>
+#include <vtkOpenGLGlyph3DMapper.h>
 #include <QVTKOpenGLNativeWidget.h>
 #include <vtkActor.h>
 #include <vtkDataSetMapper.h>
@@ -50,6 +51,25 @@
 #include "./pdb_handler.hpp"
 
 class RenderWindow : public QWidget{
+
+private:
+  vtkNew<vtkSphereSource> sphere;
+  vtkNew<vtkLineSource> line;
+  vtkNew<vtkTubeFilter> cylinder;
+  vtkNew<vtkUnsignedCharArray> colors;
+  vtkNew<vtkFloatArray> sizes;
+  vtkNew<vtkPoints> points;
+  vtkNew<vtkPoints> connectionCenters;
+  vtkNew<vtkDoubleArray> orientation;
+  vtkNew<vtkDoubleArray> scaleArray;
+  vtkNew<vtkPolyData> data;
+  vtkNew<vtkPolyData> cylinderData;
+  vtkNew<vtkOpenGLGlyph3DMapper> glyph3D;
+  vtkNew<vtkOpenGLGlyph3DMapper> cyl_glyph;
+  vtkNew<vtkActor> actor;
+  vtkNew<vtkActor> c_actor;
+  vtkNew<vtkRenderer> renderer;
+
 public:
   RenderWindow(PDBFile *file);
   PDBFile *file;

@@ -14,7 +14,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
   loaded = false;
-  this->setWindowTitle("ReChainer");
+  this->setWindowTitle("ReChaineR");
 
   // Widget creation
   load_file = new QPushButton("Load PDB");

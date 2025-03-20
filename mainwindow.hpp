@@ -12,7 +12,7 @@ class MainWindow : public QWidget {
   QPushButton *load_file, *show_render;
   QVBoxLayout *layout;
   QTableWidget *table;
-  PDBFile *file;
+  PDBFile *file = nullptr;
   RenderWindow *rwin;
 
 public:
