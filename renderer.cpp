@@ -171,9 +171,9 @@ void RenderWindow::setupVTK() {
   glyph3D->SetCullingAndLOD(true);
   // glyph3D->SetLODColoring(true);
   glyph3D->SetNumberOfLOD(3);
-  glyph3D->SetLODDistanceAndTargetReduction(1, 25, 0.5);
-  glyph3D->SetLODDistanceAndTargetReduction(2, 35, 0.75);
-  glyph3D->SetLODDistanceAndTargetReduction(3, 50, 0.95);
+  glyph3D->SetLODDistanceAndTargetReduction(1, 20, 0.3);
+  glyph3D->SetLODDistanceAndTargetReduction(2, 40, 0.6);
+  glyph3D->SetLODDistanceAndTargetReduction(3, 60, 0.9);
   glyph3D->SetSourceConnection(sphere->GetOutputPort());
   glyph3D->SetColorModeToDirectScalars();
   glyph3D->SetScaleModeToScaleByMagnitude();
@@ -183,9 +183,9 @@ void RenderWindow::setupVTK() {
   cyl_glyph->SetCullingAndLOD(true);
   // cyl_glyph->SetLODColoring(true);
   cyl_glyph->SetNumberOfLOD(3);
-  cyl_glyph->SetLODDistanceAndTargetReduction(1, 25, 0.50);
-  cyl_glyph->SetLODDistanceAndTargetReduction(2, 35, 0.75);
-  cyl_glyph->SetLODDistanceAndTargetReduction(3, 50, 0.95);
+  cyl_glyph->SetLODDistanceAndTargetReduction(1, 20, 0.30);
+  cyl_glyph->SetLODDistanceAndTargetReduction(2, 40, 0.6);
+  cyl_glyph->SetLODDistanceAndTargetReduction(3, 60, 0.9);
   cyl_glyph->SetSourceConnection(cylinder->GetOutputPort());
   cyl_glyph->SetOrientationArray("Orientation");
   cyl_glyph->SetScaleArray("LengthScaling");
