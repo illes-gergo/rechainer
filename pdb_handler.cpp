@@ -20,8 +20,9 @@ void setAtom(ATOM *atom, std::string record) {
   atom->z = std::stod(record.substr(46, 8));      // set z coordinate
   atom->occupancy = std::stod(record.substr(46, 8)); // set occupancy number
   std::memcpy(atom->element, record.substr(76, 2).c_str(),
-              2);   // set element name
-  atom->charge = 0; // for now it is set to zero;
+              2);            // set element name
+  atom->charge = 0;          // for now it is set to zero;
+  atom->region = REGION::MM; // by default atoms are in the MM region;
 }
 
 void PDBFile::openPDB(std::string fileName) {
@@ -96,7 +97,7 @@ void PDBFile::parsePDB() {
   countActualConnections();
 #ifdef PRINT
   std::cout << posCounter << " atoms parsed." << '\n';
-  std::cout << connectionCount << " connections parsed." << std::endl;
+  std::cout << connectionCount << " unique connections parsed." << std::endl;
 #endif
 }
 
@@ -128,12 +129,12 @@ uniquePairList PDBFile::getUniquePairs() {
       if (connedAtom < data.baseAtomID) {
         continue;
       } else {
-        retval.at(i).first[0]=atoms.at(connedAtom).x;
-        retval.at(i).first[1]=atoms.at(connedAtom).y;
-        retval.at(i).first[2]=atoms.at(connedAtom).z;
-        retval.at(i).second[0]=atoms.at(data.baseAtomID).x;
-        retval.at(i).second[1]=atoms.at(data.baseAtomID).y;
-        retval.at(i).second[2]=atoms.at(data.baseAtomID).z;
+        retval.at(i).first[0] = atoms.at(connedAtom).x;
+        retval.at(i).first[1] = atoms.at(connedAtom).y;
+        retval.at(i).first[2] = atoms.at(connedAtom).z;
+        retval.at(i).second[0] = atoms.at(data.baseAtomID).x;
+        retval.at(i).second[1] = atoms.at(data.baseAtomID).y;
+        retval.at(i).second[2] = atoms.at(data.baseAtomID).z;
         i++;
       }
     }

@@ -27,13 +27,21 @@ RenderWindow::RenderWindow(PDBFile *file) : QWidget(nullptr) {
   this->setWindowTitle("ReChaineR - 3D Viewer");
 }
 
-void ::RenderWindow::getColor(ATOM *atom, unsigned char color[3], float *scale) {
+void ::RenderWindow::getColor(ATOM *atom, unsigned char color[3],
+                              float *scale) {
   char *element = atom->element;
   if (element[0] == ' ' && element[1] == 'C') {
-    color[0] = 0;
-    color[1] = 255;
-    color[2] = 0;
-    *scale = 1.7;
+    if (atom->chainID == 'A') {
+      color[0] = 0;
+      color[1] = 255;
+      color[2] = 0;
+      *scale = 1.7;
+    } else {
+      color[0] = 0;
+      color[1] = 255;
+      color[2] = 255;
+      *scale = 1.7;
+    }
   } else if (element[0] == ' ' && element[1] == 'N') {
     color[0] = 0;
     color[1] = 0;
@@ -74,7 +82,7 @@ void ::RenderWindow::getColor(ATOM *atom, unsigned char color[3], float *scale) 
 
 void RenderWindow::demo() {
 
-  if (file == nullptr){
+  if (file == nullptr) {
     QMessageBox msgbox;
     msgbox.setText("No PDB file loaded for rendering!");
     msgbox.setWindowTitle("PDB File error");
@@ -126,7 +134,6 @@ void RenderWindow::demo() {
     i++;
   }
 
-
   glyph3D->Update();
   cyl_glyph->Update();
 
@@ -170,7 +177,7 @@ void RenderWindow::setupVTK() {
   cylinderData->SetPoints(connectionCenters);
   cylinderData->GetPointData()->AddArray(scaleArray);
   cylinderData->GetPointData()->AddArray(orientation);
-  
+
   glyph3D->SetInputData(data);
   cyl_glyph->SetInputData(cylinderData);
 
@@ -183,8 +190,8 @@ void RenderWindow::setupVTK() {
   glyph3D->SetSourceConnection(sphere->GetOutputPort());
   glyph3D->SetColorModeToDirectScalars();
   glyph3D->SetScaleModeToScaleByMagnitude();
-  glyph3D->SetInputArrayToProcess(0, 0, 0, vtkDataObject::FIELD_ASSOCIATION_POINTS, "Scale");
-
+  glyph3D->SetInputArrayToProcess(
+      0, 0, 0, vtkDataObject::FIELD_ASSOCIATION_POINTS, "Scale");
 
   cyl_glyph->SetCullingAndLOD(true);
   // cyl_glyph->SetLODColoring(true);
@@ -196,15 +203,15 @@ void RenderWindow::setupVTK() {
   cyl_glyph->SetOrientationArray("Orientation");
   cyl_glyph->SetScaleArray("LengthScaling");
   cyl_glyph->SetScaleModeToScaleByVectorComponents();
-  
+
   actor->SetMapper(glyph3D);
   actor->GetProperty()->SetSpecular(1.0);
   actor->GetProperty()->SetSpecularPower(25.0);
-  actor->GetProperty()->SetSpecularColor((double[]){1,1,1});
+  actor->GetProperty()->SetSpecularColor((double[]){1, 1, 1});
   c_actor->SetMapper(cyl_glyph);
   c_actor->GetProperty()->SetSpecular(1.0);
   c_actor->GetProperty()->SetSpecularPower(25.0);
-  c_actor->GetProperty()->SetSpecularColor((double[]){1,1,1});
+  c_actor->GetProperty()->SetSpecularColor((double[]){1, 1, 1});
 
   light->SetLightTypeToHeadlight();
   light->SetPositional(true);

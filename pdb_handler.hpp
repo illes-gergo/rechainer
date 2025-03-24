@@ -14,11 +14,14 @@
 #endif
 #endif
 
-typedef std::vector<std::pair<double[3],double[3]>> uniquePairList;
-typedef std::pair<double[3],double[3]> uniquePair;
+enum REGION { QM, MM };
+
+typedef std::vector<std::pair<double[3], double[3]>> uniquePairList;
+typedef std::pair<double[3], double[3]> uniquePair;
 
 typedef struct {
   int serialNumber, resSeq, charge;
+  int region;
   char atomName[4], resName[3], chainID, element[2];
   double x, y, z;
   double occupancy;
