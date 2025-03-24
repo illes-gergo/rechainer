@@ -15,6 +15,7 @@ find_package(VTK COMPONENTS
   CommonCore
   CommonDataModel
   FiltersSources
+  FiltersParallel
   GUISupportQt
   InteractionStyle
   RenderingContextOpenGL2

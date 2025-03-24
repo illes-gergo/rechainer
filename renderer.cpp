@@ -2,9 +2,15 @@
 #include "QVTKOpenGLNativeWidget.h"
 #include "qboxlayout.h"
 #include <qmessagebox.h>
+#include <vtkActor.h>
 #include <vtkDoubleArray.h>
+#include <vtkFloatArray.h>
+#include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkGlyph3DMapper.h>
+#include <vtkPointData.h>
 #include <vtkProp.h>
+#include <vtkProperty.h>
+#include <vtkRenderer.h>
 #include <vtkUnsignedCharArray.h>
 #include <vtkUnsignedShortArray.h>
 
@@ -192,9 +198,20 @@ void RenderWindow::setupVTK() {
   cyl_glyph->SetScaleModeToScaleByVectorComponents();
   
   actor->SetMapper(glyph3D);
+  actor->GetProperty()->SetSpecular(1.0);
+  actor->GetProperty()->SetSpecularPower(25.0);
+  actor->GetProperty()->SetSpecularColor((double[]){1,1,1});
   c_actor->SetMapper(cyl_glyph);
+  c_actor->GetProperty()->SetSpecular(1.0);
+  c_actor->GetProperty()->SetSpecularPower(25.0);
+  c_actor->GetProperty()->SetSpecularColor((double[]){1,1,1});
+
+  light->SetLightTypeToHeadlight();
+  light->SetPositional(true);
+
   renderer->AddActor(actor);
   renderer->AddActor(c_actor);
+  renderer->AddLight(light);
 
   window->AddRenderer(renderer);
 }
